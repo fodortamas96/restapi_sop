@@ -1,0 +1,254 @@
+{
+  "openapi" : "3.0.0",
+  "servers" : [ {
+    "url" : "http://localhost:3000"
+  } ],
+  "info" : {
+    "description" : "This is an API for pokedex exam project",
+    "version" : "1.0.0",
+    "title" : "Pokedex API",
+    "contact" : {
+      "email" : "fodor.tamas48@gmail.com"
+    }
+  },
+  "tags" : [ {
+    "name" : "pokemon",
+    "description" : "CRUD operations on the Pokedex database"
+  }, {
+    "name" : "users",
+    "description" : "User operations (sing in and register)"
+  } ],
+  "paths" : {
+    "/pokemon" : {
+      "get" : {
+        "tags" : [ "pokemon" ],
+        "summary" : "get all pokemon from pokedex",
+        "operationId" : "getAllPokemon",
+        "description" : "GET request without parameters, returns all pokemon from pokedex",
+        "responses" : {
+          "200" : {
+            "description" : "search all pokemon",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Pokemon"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "pokemon" ],
+        "summary" : "adds a pokemon",
+        "operationId" : "insertPokemon",
+        "description" : "Insert a pokemon in the pokedex",
+        "responses" : {
+          "201" : {
+            "description" : "Pokemon created!"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Pokemon"
+              }
+            }
+          },
+          "description" : "Pokemon to insert"
+        }
+      },
+      "put" : {
+        "tags" : [ "pokemon" ],
+        "summary" : "update a pokemon",
+        "operationId" : "updatePokemon",
+        "description" : "update a pokemon data in the pokedex",
+        "responses" : {
+          "200" : {
+            "description" : "Pokemon updated!"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Pokemon"
+              }
+            }
+          },
+          "description" : "Pokemon to update"
+        }
+      }
+    },
+    "/pokemon/{id}" : {
+      "get" : {
+        "tags" : [ "pokemon" ],
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "minimum" : 1
+          },
+          "description" : "pokemon ID"
+        } ],
+        "summary" : "get a pokemon by ID from pokedex",
+        "operationId" : "getPokemonById",
+        "description" : "GET request with the id parameter, returns the pokemon with the specified id from pokedex",
+        "responses" : {
+          "200" : {
+            "description" : "search a pokemon with the given id",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Pokemon"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pokemon not found!"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pokemon" ],
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "minimum" : 1
+          },
+          "description" : "pokemon ID"
+        } ],
+        "summary" : "delete the pokemon with the given ID",
+        "operationId" : "deletePokemonById",
+        "description" : "DELETE request with the id parameter, delete the pokemon with the given ID",
+        "responses" : {
+          "200" : {
+            "description" : "Pokemon deleted!"
+          }
+        }
+      }
+    },
+    "/auth/login" : {
+      "post" : {
+        "tags" : [ "users" ],
+        "summary" : "user login",
+        "operationId" : "loginUser",
+        "description" : "User can log in, checks if already in users table",
+        "responses" : {
+          "200" : {
+            "description" : "Logged in!"
+          },
+          "401" : {
+            "description" : "Email or password is incorrect!"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/User"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register" : {
+      "post" : {
+        "tags" : [ "users" ],
+        "summary" : "user register",
+        "operationId" : "registerUser",
+        "description" : "User sign up",
+        "responses" : {
+          "201" : {
+            "description" : "The user has been registered!"
+          },
+          "409" : {
+            "description" : "This email already in use!"
+          },
+          "500" : {
+            "description" : "Something went wrong!"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/User"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Pokemon" : {
+        "type" : "object",
+        "required" : [ "id", "name" ],
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "example" : 1
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "Pikachu"
+          },
+          "type" : {
+            "type" : "string",
+            "example" : "Electric"
+          },
+          "health" : {
+            "type" : "integer",
+            "example" : 35
+          },
+          "region" : {
+            "type" : "string",
+            "example" : "Kanto"
+          }
+        }
+      },
+      "User" : {
+        "type" : "object",
+        "required" : [ "username", "email", "password" ],
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "example" : 1
+          },
+          "username" : {
+            "type" : "string",
+            "example" : "fodortamas96"
+          },
+          "email" : {
+            "type" : "string",
+            "example" : "fodor.tamas48@gmail.com"
+          },
+          "password" : {
+            "type" : "string",
+            "format" : "password",
+            "writeOnly" : true
+          }
+        }
+      }
+    }
+  }
+}
